@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <title>GRPF Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@600&display=swap" rel="stylesheet">
+</head>
+<body class="bg-slate-900 text-white">
+    <header class="p-4 bg-red-800 flex justify-between items-center shadow-lg">
+        <h1 class="text-3xl font-bold teko tracking-widest uppercase">GRPF ADMIN PANEL</h1>
+        <a href="index.html" class="bg-white text-red-800 px-4 py-1 rounded font-bold">LIVE SITE</a>
+    </header>
+
+    <main class="p-6 max-w-7xl mx-auto">
+        <!-- Dashboard Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            <div class="bg-slate-800 p-6 rounded-xl border-b-4 border-red-500">
+                <h3 class="text-gray-400 uppercase text-sm">Total Reports</h3>
+                <p id="statPosts" class="text-4xl font-bold">0</p>
+            </div>
+            <div class="bg-slate-800 p-6 rounded-xl border-b-4 border-blue-500">
+                <h3 class="text-gray-400 uppercase text-sm">Total Members</h3>
+                <p id="statUsers" class="text-4xl font-bold">0</p>
+            </div>
+            <div class="bg-slate-800 p-6 rounded-xl border-b-4 border-yellow-500">
+                <h3 class="text-gray-400 uppercase text-sm">Pending NGO Verification</h3>
+                <p id="statPending" class="text-4xl font-bold">0</p>
+            </div>
+        </div>
+
+        <!-- Management Tables -->
+        <section class="bg-white text-slate-900 rounded-2xl overflow-hidden shadow-2xl">
+            <div class="p-4 bg-gray-100 font-bold border-b">MANAGE RECENT POSTS</div>
+            <table class="w-full text-left">
+                <thead class="bg-gray-50 text-xs uppercase text-gray-500">
+                    <tr>
+                        <th class="p-4">Name/Item</th>
+                        <th class="p-4">Location</th>
+                        <th class="p-4">Status</th>
+                        <th class="p-4">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="postTableBody">
+                    <!-- Firebase Data will load here -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = { /* Paste Config Here */ };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        async function loadAdminData() {
+            const querySnapshot = await getDocs(collection(db, "posts"));
+            const tbody = document.getElementById('postTableBody');
+            tbody.innerHTML = "";
+            
+            document.getElementById('statPosts').innerText = querySnapshot.size;
+
+            querySnapshot.forEach((postDoc) => {
+                const data = postDoc.data();
+                tbody.innerHTML += `
+                    <tr class="border-b">
+                        <td class="p-4 font-bold">${data.name}</td>
+                        <td class="p-4">${data.location}</td>
+                        <td class="p-4"><span class="px-2 py-1 bg-red-100 text-red-600 text-xs rounded-full font-bold">${data.status}</span></td>
+                        <td class="p-4">
+                            <button onclick="window.deletePost('${postDoc.id}')" class="text-red-500 hover:underline font-bold">DELETE</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        window.deletePost = async (id) => {
+            if(confirm("Are you sure?")) {
+                await deleteDoc(doc(db, "posts", id));
+                loadAdminData();
+            }
+        };
+
+        loadAdminData();
+    </script>
+</body>
+</html>

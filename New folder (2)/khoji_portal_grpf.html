@@ -1,0 +1,215 @@
+
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gumsuda Ki Talash | Growing People Foundation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Khand:wght@400;600;700&family=Teko:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #dc2626; /* Red for urgency */
+            --secondary: #1e40af; /* Blue for trust */
+            --accent: #f59e0b; /* Yellow/Orange for warnings */
+        }
+        body {
+            font-family: 'Khand', sans-serif;
+            background-color: #f8fafc;
+        }
+        .teko { font-family: 'Teko', sans-serif; }
+        .hero-bg {
+            background: linear-gradient(rgba(220, 38, 38, 0.9), rgba(185, 28, 28, 0.9)), url('https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+        .card-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: transform 0.2s;
+        }
+        .card-shadow:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header / Navbar -->
+    <nav class="bg-white border-b sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center">
+                    <span class="text-3xl font-bold text-red-600 teko uppercase tracking-wider">GRPF | खोजी</span>
+                </div>
+                <div class="hidden md:flex space-x-8 text-lg font-semibold">
+                    <a href="#" class="text-gray-900 border-b-2 border-red-600">Home</a>
+                    <a href="#" class="text-gray-500 hover:text-red-600">Missing</a>
+                    <a href="#" class="text-gray-500 hover:text-red-600">Found</a>
+                    <a href="#" class="text-gray-500 hover:text-red-600">Contact</a>
+                </div>
+                <div>
+                    <button class="bg-red-600 text-white px-5 py-2 rounded-lg font-bold hover:bg-red-700 transition">POST AD</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero-bg text-white py-16 px-4 text-center">
+        <h1 class="text-4xl md:text-6xl font-bold mb-4 teko uppercase">किसी अपने को ढूंढने में मदद करें</h1>
+        <p class="text-xl md:text-2xl max-w-2xl mx-auto mb-8 opacity-90">Growing People Foundation का खोया-पाया डिजिटल पोर्टल। इंसान, बच्चे या कीमती सामान की जानकारी यहाँ साझा करें।</p>
+        <div class="max-w-3xl mx-auto bg-white rounded-xl p-2 flex flex-col md:flex-row gap-2 shadow-2xl">
+            <input type="text" placeholder="नाम या जगह सर्च करें..." class="flex-grow p-4 text-gray-800 rounded-lg outline-none text-lg">
+            <select class="p-4 text-gray-600 border-l border-gray-200 outline-none">
+                <option>All India</option>
+                <option>Madhya Pradesh</option>
+                <option>Uttar Pradesh</option>
+            </select>
+            <button class="bg-blue-700 text-white px-8 py-4 rounded-lg font-bold hover:bg-blue-800 uppercase">Search</button>
+        </div>
+    </div>
+
+    <!-- Stats Section -->
+    <div class="max-w-7xl mx-auto px-4 -mt-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="bg-white p-6 rounded-xl shadow-lg text-center border-b-4 border-red-500">
+                <p class="text-3xl font-bold text-gray-800">1,250+</p>
+                <p class="text-gray-500 font-semibold uppercase">Missing Cases</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-lg text-center border-b-4 border-green-500">
+                <p class="text-3xl font-bold text-gray-800">480+</p>
+                <p class="text-gray-500 font-semibold uppercase">Found Success</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-lg text-center border-b-4 border-blue-500">
+                <p class="text-3xl font-bold text-gray-800">15K+</p>
+                <p class="text-gray-500 font-semibold uppercase">Active Users</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-lg text-center border-b-4 border-yellow-500">
+                <p class="text-3xl font-bold text-gray-800">50+</p>
+                <p class="text-gray-500 font-semibold uppercase">NGO Partners</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content: Recent Listings -->
+    <div class="max-w-7xl mx-auto px-4 py-12">
+        <div class="flex justify-between items-end mb-8 border-b-2 border-gray-200 pb-4">
+            <h2 class="text-3xl font-bold text-gray-800 uppercase tracking-tight">Recent <span class="text-red-600">Listings</span></h2>
+            <div class="flex gap-2">
+                <button class="px-4 py-1 bg-red-600 text-white rounded text-sm font-bold">ALL</button>
+                <button class="px-4 py-1 bg-white border text-gray-600 rounded text-sm font-bold">PEOPLE</button>
+                <button class="px-4 py-1 bg-white border text-gray-600 rounded text-sm font-bold">PETS</button>
+                <button class="px-4 py-1 bg-white border text-gray-600 rounded text-sm font-bold">STUFF</button>
+            </div>
+        </div>
+
+        <!-- 4x4 Grid for Desktop -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            
+            <!-- Card 1 (Missing) -->
+            <div class="bg-white rounded-2xl overflow-hidden card-shadow border border-gray-100">
+                <div class="relative">
+                    <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=400&h=300" class="w-full h-56 object-cover">
+                    <span class="absolute top-4 left-4 bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold uppercase">Missing</span>
+                </div>
+                <div class="p-5">
+                    <h3 class="text-xl font-bold text-gray-900 mb-1">Aman Verma (Age 12)</h3>
+                    <p class="text-gray-500 text-sm mb-4"><span class="font-bold">Missing From:</span> Lahar, Bhind (MP)</p>
+                    <div class="flex items-center justify-between text-xs text-gray-400 mb-4 italic">
+                        <span>Reported: 2 hours ago</span>
+                        <span>Viewed: 142 times</span>
+                    </div>
+                    <button class="w-full bg-gray-900 text-white py-2 rounded-lg font-bold hover:bg-black transition uppercase">View Details</button>
+                </div>
+            </div>
+
+            <!-- Card 2 (Found) -->
+            <div class="bg-white rounded-2xl overflow-hidden card-shadow border border-gray-100">
+                <div class="relative">
+                    <img src="https://images.unsplash.com/photo-1595076472024-34c93540134d?auto=format&fit=crop&w=400&h=300" class="w-full h-56 object-cover">
+                    <span class="absolute top-4 left-4 bg-green-600 text-white px-3 py-1 rounded-full text-xs font-bold uppercase">Found</span>
+                </div>
+                <div class="p-5">
+                    <h3 class="text-xl font-bold text-gray-900 mb-1">Black Leather Wallet</h3>
+                    <p class="text-gray-500 text-sm mb-4"><span class="font-bold">Found At:</span> Railway Station</p>
+                    <div class="flex items-center justify-between text-xs text-gray-400 mb-4 italic">
+                        <span>Reported: Yesterday</span>
+                        <span>Viewed: 89 times</span>
+                    </div>
+                    <button class="w-full bg-gray-900 text-white py-2 rounded-lg font-bold hover:bg-black transition uppercase">Claim Now</button>
+                </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="bg-white rounded-2xl overflow-hidden card-shadow border border-gray-100">
+                <div class="relative">
+                    <img src="https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=crop&w=400&h=300" class="w-full h-56 object-cover">
+                    <span class="absolute top-4 left-4 bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold uppercase">Missing</span>
+                </div>
+                <div class="p-5">
+                    <h3 class="text-xl font-bold text-gray-900 mb-1">Golden Retriever (Bruno)</h3>
+                    <p class="text-gray-500 text-sm mb-4"><span class="font-bold">Area:</span> Green Park, Delhi</p>
+                    <div class="flex items-center justify-between text-xs text-gray-400 mb-4 italic">
+                        <span>Reported: 3 days ago</span>
+                        <span>Viewed: 310 times</span>
+                    </div>
+                    <button class="w-full bg-gray-900 text-white py-2 rounded-lg font-bold hover:bg-black transition uppercase">View Details</button>
+                </div>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="bg-white rounded-2xl overflow-hidden card-shadow border border-gray-100">
+                <div class="relative">
+                    <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&h=300" class="w-full h-56 object-cover">
+                    <span class="absolute top-4 left-4 bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold uppercase">Missing</span>
+                </div>
+                <div class="p-5">
+                    <h3 class="text-xl font-bold text-gray-900 mb-1">Rohan Shinde (Age 45)</h3>
+                    <p class="text-gray-500 text-sm mb-4"><span class="font-bold">Missing From:</span> Mumbai Central</p>
+                    <div class="flex items-center justify-between text-xs text-gray-400 mb-4 italic">
+                        <span>Reported: 1 hour ago</span>
+                        <span>Viewed: 52 times</span>
+                    </div>
+                    <button class="w-full bg-gray-900 text-white py-2 rounded-lg font-bold hover:bg-black transition uppercase">View Details</button>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="text-center mt-12">
+            <button class="bg-white border-2 border-red-600 text-red-600 px-10 py-3 rounded-xl font-bold hover:bg-red-50 transition uppercase text-lg">Load More Listings</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12 px-4 border-t-8 border-red-600">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
+            <div>
+                <h4 class="text-2xl font-bold teko mb-4 uppercase tracking-widest">Growing People Foundation</h4>
+                <p class="text-gray-400 leading-relaxed mb-6">हमारा उद्देश्य बिछड़े हुए लोगों और उनके सामान को सुरक्षित रूप से उनके घर पहुँचाना है। यह एक सामूहिक सामाजिक पहल है।</p>
+                <div class="flex gap-4">
+                    <a href="#" class="bg-gray-800 p-2 rounded-full hover:bg-red-600 transition">FB</a>
+                    <a href="#" class="bg-gray-800 p-2 rounded-full hover:bg-red-600 transition">TW</a>
+                    <a href="#" class="bg-gray-800 p-2 rounded-full hover:bg-red-600 transition">IG</a>
+                </div>
+            </div>
+            <div>
+                <h4 class="text-xl font-bold mb-4 uppercase">Quick Links</h4>
+                <ul class="text-gray-400 space-y-2">
+                    <li><a href="#" class="hover:text-white">About GRPF</a></li>
+                    <li><a href="#" class="hover:text-white">Privacy Policy</a></li>
+                    <li><a href="#" class="hover:text-white">Terms of Use</a></li>
+                    <li><a href="#" class="hover:text-white">How it Works</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-xl font-bold mb-4 uppercase">Need Help?</h4>
+                <p class="text-gray-400 mb-2">Email: contact@grpf.org</p>
+                <p class="text-gray-400 mb-4">Whatsapp: +91 8435485447</p>
+                <p class="text-sm text-gray-500 border-t border-gray-800 pt-4 mt-4 uppercase tracking-tighter">Design by Kaneriya Computers • © 2026 GRPF</p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
