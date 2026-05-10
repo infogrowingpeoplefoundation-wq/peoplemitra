@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khoya Paya - Growing People Foundation</title>
+    <!-- Firebase SDKs Compat version (easy to use) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            color: #1a1a2e;
+        }
+        header {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .logo h2 {
+            font-size: 1.5rem;
+        }
+        .logo p {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .nav-links button, .nav-links span {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .nav-links span {
+            background: transparent;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.3rem;
+            font-weight: 600;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        button {
+            background: #2a5298;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            margin: 0.2rem;
+        }
+        button:hover {
+            background: #1e3c72;
+        }
+        .btn-success {
+            background: #28a745;
+        }
+        .btn-success:hover {
+            background: #218838;
+        }
+        .btn-warning {
+            background: #ffc107;
+            color: #333;
+        }
+        .btn-danger {
+            background: #dc3545;
+        }
+        .btn-found {
+            background: #dc3545;
+        }
+        .post-card {
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background: #fff;
+            transition: all 0.3s;
+        }
+        .post-card.resolved {
+            background: #f8f9fa;
+            opacity: 0.85;
+        }
+        .post-card.resolved .person-name {
+            text-decoration: line-through;
+            color: #dc3545;
+            text-decoration-thickness: 3px;
+        }
+        .post-card img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+            object-fit: cover;
+        }
+        .found-badge {
+            display: inline-block;
+            background: #dc3545;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-left: 0.5rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 1rem;
+        }
+        .search-box {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .search-box input {
+            flex: 1;
+        }
+        .hidden {
+            display: none;
+        }
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            background: #1a1a2e;
+            color: white;
+            margin-top: 2rem;
+        }
+        .filter-buttons {
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .preview-img {
+            max-width: 200px;
+            margin-top: 0.5rem;
+            border-radius: 8px;
+        }
+        @media (max-width: 600px) {
+            nav {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <h2>🌾 Growing People Foundation</h2>
+                <p>खोया पाया - मिलकर ढूंढें</p>
+            </div>
+            <div class="nav-links" id="navLinks">
+                <button onclick="showSection('home')">🏠 होम</button>
+                <button onclick="showSection('report')">📝 रिपोर्ट करें</button>
+                <button onclick="showSection('search')">🔍 खोजें</button>
+                <span id="userInfo"></span>
+                <button id="authBtn" onclick="handleAuth()">लॉगिन</button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <!-- Login Modal -->
+        <div id="loginModal" class="card hidden">
+            <h3>🔐 लॉगिन / साइनअप</h3>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="loginEmail" placeholder="your@email.com">
+            </div>
+            <div class="form-group">
+                <label>Password (कम से कम 6 अक्षर)</label>
+                <input type="password" id="loginPassword" placeholder="••••••">
+            </div>
+            <button onclick="login()" class="btn-success">लॉगिन</button>
+            <button onclick="signup()">साइनअप</button>
+            <button onclick="closeModal()" class="btn-danger">बंद करें</button>
+        </div>
+
+        <!-- Home Section -->
+        <div id="homeSection">
+            <div class="card">
+                <h2>🙏 स्वागत है</h2>
+                <p>हमारा मिशन है कि खोए हुए लोगों को उनके परिवार से मिलाया जाए। कृपया साइनअप करें और खोए व्यक्ति की रिपोर्ट दर्ज करें।</p>
+                <br>
+                <p><strong>📌 हाल ही की रिपोर्ट:</strong></p>
+                <div id="recentPosts"></div>
+            </div>
+        </div>
+
+        <!-- Report Section -->
+        <div id="reportSection" class="hidden">
+            <div class="card">
+                <h2>📝 नई रिपोर्ट दर्ज करें</h2>
+                <form id="reportForm">
+                    <div class="form-group">
+                        <label>व्यक्ति का नाम *</label>
+                        <input type="text" id="personName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>आयु</label>
+                        <input type="number" id="age">
+                    </div>
+                    <div class="form-group">
+                        <label>लिंग</label>
+                        <select id="gender">
+                            <option>पुरुष</option>
+                            <option>महिला</option>
+                            <option>अन्य</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>आखिरी बार कहाँ देखा गया? *</label>
+                        <input type="text" id="lastSeen" required>
+                    </div>
+                    <div class="form-group">
+                        <label>तारीख (लगभग)</label>
+                        <input type="date" id="missingDate">
+                    </div>
+                    <div class="form-group">
+                        <label>विवरण (कपड़े, निशान, आदि)</label>
+                        <textarea id="description" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>संपर्क नंबर (जानकारी देने वाले का)</label>
+                        <input type="text" id="contactNo">
+                    </div>
+                    <div class="form-group">
+                        <label>📸 फोटो अपलोड करें</label>
+                        <input type="file" id="photoFile" accept="image/*" onchange="previewImage(this)">
+                        <div id="imagePreview"></div>
+                    </div>
+                    <button type="submit">✅ रिपोर्ट सबमिट करें</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Search Section -->
+        <div id="searchSection" class="hidden">
+            <div class="card">
+                <h2>🔍 खोजें</h2>
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="नाम, जगह, या विवरण से खोजें...">
+                    <button onclick="searchPosts()">🔎 खोजें</button>
+                    <button onclick="loadAllPosts()">📋 सभी दिखाएं</button>
+                </div>
+                <div class="filter-buttons">
+                    <button onclick="filterMissing()" class="btn-success">❌ केवल खोए हुए</button>
+                    <button onclick="filterFound()" class="btn-warning">✅ केवल मिल गए</button>
+                    <button onclick="loadAllPosts()">🔄 सभी</button>
+                </div>
+                <div id="searchResults" class="grid"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 Growing People Foundation - खोया पाया पहल | सभी जानकारी सत्यापित करें</p>
+    </footer>
+
+    <script>
+        // 🔥 APKA FIREBASE CONFIG (Aapne diya hua)
+        const firebaseConfig = {
+            apiKey: "AIzaSyAcRrP84P49zsiYXueF1K_orf_35v3-Re4",
+            authDomain: "peoplemitra-90a0b.firebaseapp.com",
+            projectId: "peoplemitra-90a0b",
+            storageBucket: "peoplemitra-90a0b.firebasestorage.app",
+            messagingSenderId: "512986064713",
+            appId: "1:512986064713:web:c9fbd2684fced7d6021c98",
+            measurementId: "G-1Q80XHZ334"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+        
+        let currentUser = null;
+        let currentFilter = 'all'; // all, missing, found
+        let selectedFile = null;
+
+        // UI Elements
+        const loginModal = document.getElementById('loginModal');
+        const userInfoSpan = document.getElementById('userInfo');
+        const authBtn = document.getElementById('authBtn');
+        const homeSection = document.getElementById('homeSection');
+        const reportSection = document.getElementById('reportSection');
+        const searchSection = document.getElementById('searchSection');
+        const recentPostsDiv = document.getElementById('recentPosts');
+
+        // Image Preview
+        function previewImage(input) {
+            const preview = document.getElementById('imagePreview');
+            if (input.files && input.files[0]) {
+                selectedFile = input.files[0];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.innerHTML = `<img src="${e.target.result}" class="preview-img">`;
+                };
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                preview.innerHTML = '';
+                selectedFile = null;
+            }
+        }
+
+        // Upload Photo to Firebase Storage
+        async function uploadPhoto(file, postId) {
+            if (!file) return null;
+            const storageRef = storage.ref();
+            const fileRef = storageRef.child(`photos/${postId}_${Date.now()}.jpg`);
+            await fileRef.put(file);
+            const photoURL = await fileRef.getDownloadURL();
+            return photoURL;
+        }
+
+        // Auth State
+        auth.onAuthStateChanged((user) => {
+            currentUser = user;
+            if (user) {
+                userInfoSpan.innerText = `👤 ${user.email}`;
+                authBtn.innerText = 'लॉगआउट';
+                loginModal.classList.add('hidden');
+            } else {
+                userInfoSpan.innerText = '';
+                authBtn.innerText = 'लॉगिन';
+            }
+        });
+
+        function handleAuth() {
+            if (currentUser) {
+                auth.signOut().then(() => alert('लॉगआउट हो गया'));
+            } else {
+                loginModal.classList.remove('hidden');
+            }
+        }
+
+        function closeModal() {
+            loginModal.classList.add('hidden');
+        }
+
+        async function login() {
+            const email = document.getElementById('loginEmail').value;
+            const pwd = document.getElementById('loginPassword').value;
+            try {
+                await auth.signInWithEmailAndPassword(email, pwd);
+                alert('✅ लॉगिन सफल');
+                closeModal();
+                showSection('home');
+            } catch (err) {
+                alert('❌ लॉगिन फेल: ' + err.message);
+            }
+        }
+
+        async function signup() {
+            const email = document.getElementById('loginEmail').value;
+            const pwd = document.getElementById('loginPassword').value;
+            if (pwd.length < 6) {
+                alert('पासवर्ड कम से कम 6 अक्षर का होना चाहिए');
+                return;
+            }
+            try {
+                await auth.createUserWithEmailAndPassword(email, pwd);
+                alert('✅ अकाउंट बन गया! अब लॉगिन करें');
+            } catch (err) {
+                alert('❌ साइनअप फेल: ' + err.message);
+            }
+        }
+
+        function showSection(section) {
+            homeSection.classList.add('hidden');
+            reportSection.classList.add('hidden');
+            searchSection.classList.add('hidden');
+            if (section === 'home') homeSection.classList.remove('hidden');
+            if (section === 'report') {
+                if (!currentUser) {
+                    alert('⚠️ पहले लॉगिन करें');
+                    loginModal.classList.remove('hidden');
+                    return;
+                }
+                reportSection.classList.remove('hidden');
+            }
+            if (section === 'search') {
+                searchSection.classList.remove('hidden');
+                loadAllPosts();
+            }
+        }
+
+        // Report Submit with Photo Upload
+        document.getElementById('reportForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!currentUser) {
+                alert('⚠️ पहले लॉगिन करें');
+                return;
+            }
+            
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'जमा हो रहा है...';
+            
+            try {
+                // Pehle post create karo (without photo)
+                const postData = {
+                    userId: currentUser.uid,
+                    userEmail: currentUser.email,
+                    personName: document.getElementById('personName').value,
+                    age: document.getElementById('age').value,
+                    gender: document.getElementById('gender').value,
+                    lastSeen: document.getElementById('lastSeen').value,
+                    missingDate: document.getElementById('missingDate').value,
+                    description: document.getElementById('description').value,
+                    contactNo: document.getElementById('contactNo').value,
+                    photoUrl: '',
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    status: 'missing', // missing or found
+                    foundBy: null,
+                    foundDate: null
+                };
+                
+                const docRef = await db.collection('missingPersons').add(postData);
+                
+                // Agar photo hai to upload karo
+                if (selectedFile) {
+                    const photoUrl = await uploadPhoto(selectedFile, docRef.id);
+                    await docRef.update({ photoUrl: photoUrl });
+                }
+                
+                alert('✅ रिपोर्ट दर्ज हो गई! धन्यवाद');
+                document.getElementById('reportForm').reset();
+                document.getElementById('imagePreview').innerHTML = '';
+                selectedFile = null;
+                showSection('home');
+                loadRecentPosts();
+            } catch (err) {
+                alert('❌ Error: ' + err.message);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = '✅ रिपोर्ट सबमिट करें';
+            }
+        });
+
+        // Mark as Found
+        async function markAsFound(postId, currentStatus) {
+            if (currentStatus === 'found') {
+                alert('यह व्यक्ति पहले ही मिल चुका है!');
+                return;
+            }
+            
+            if (!currentUser) {
+                alert('⚠️ पहले लॉगिन करें');
+                return;
+            }
+            
+            const confirmMsg = confirm('क्या यह व्यक्ति मिल गया है? सुनिश्चित करें!');
+            if (!confirmMsg) return;
+            
+            try {
+                await db.collection('missingPersons').doc(postId).update({
+                    status: 'found',
+                    foundBy: currentUser.email,
+                    foundDate: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                alert('✅ बधाई! व्यक्ति मिल गया। उसके ऊपर लाल लाइन लग जाएगी।');
+                loadAllPosts();
+                loadRecentPosts();
+                if (currentFilter === 'missing') filterMissing();
+                if (currentFilter === 'found') filterFound();
+            } catch (err) {
+                alert('❌ Error: ' + err.message);
+            }
+        }
+
+        // Load recent posts for home
+        async function loadRecentPosts() {
+            const snapshot = await db.collection('missingPersons').orderBy('timestamp', 'desc').limit(6).get();
+            recentPostsDiv.innerHTML = '<div class="grid">';
+            snapshot.forEach(doc => {
+                const p = doc.data();
+                const resolvedClass = p.status === 'found' ? 'resolved' : '';
+                recentPostsDiv.innerHTML += `
+                    <div class="post-card ${resolvedClass}">
+                        ${p.status === 'found' ? '<span class="found-badge">✅ मिल गया!</span>' : '<span class="found-badge" style="background:#28a745;">❌ खोया हुआ</span>'}
+                        <h3 class="person-name">${p.personName}</h3>
+                        <strong>${p.age || '?'} वर्ष</strong> | ${p.gender || '-'}<br>
+                        📍 ${p.lastSeen}<br>
+                        ${p.photoUrl ? `<img src="${p.photoUrl}" onerror="this.style.display='none'">` : ''}
+                        <small>📅 ${p.missingDate || 'तारीख नहीं'}</small><br>
+                        <small>📞 ${p.contactNo || 'नंबर नहीं'}</small>
+                    </div>
+                `;
+            });
+            recentPostsDiv.innerHTML += '</div>';
+        }
+
+        // Load all posts for search
+        async function loadAllPosts() {
+            currentFilter = 'all';
+            const snapshot = await db.collection('missingPersons').orderBy('timestamp', 'desc').get();
+            displayResults(snapshot);
+        }
+
+        async function filterMissing() {
+            currentFilter = 'missing';
+            const snapshot = await db.collection('missingPersons').where('status', '==', 'missing').orderBy('timestamp', 'desc').get();
+            displayResults(snapshot);
+        }
+
+        async function filterFound() {
+            currentFilter = 'found';
+            const snapshot = await db.collection('missingPersons').where('status', '==', 'found').orderBy('timestamp', 'desc').get();
+            displayResults(snapshot);
+        }
+
+        async function searchPosts() {
+            const keyword = document.getElementById('searchInput').value.toLowerCase();
+            if (!keyword) {
+                loadAllPosts();
+                return;
+            }
+            const snapshot = await db.collection('missingPersons').get();
+            const filtered = [];
+            snapshot.forEach(doc => {
+                const p = doc.data();
+                if (p.personName.toLowerCase().includes(keyword) || 
+                    (p.lastSeen && p.lastSeen.toLowerCase().includes(keyword)) ||
+                    (p.description && p.description.toLowerCase().includes(keyword))) {
+                    filtered.push({ id: doc.id, ...p });
+                }
+            });
+            displayResultsArray(filtered);
+        }
+
+        function displayResults(snapshot) {
+            const results = [];
+            snapshot.forEach(doc => results.push({ id: doc.id, ...doc.data() }));
+            displayResultsArray(results);
+        }
+
+        function displayResultsArray(results) {
+            const container = document.getElementById('searchResults');
+            if (results.length === 0) {
+                container.innerHTML = '<p>❌ कोई रिपोर्ट नहीं मिली</p>';
+                return;
+            }
+            container.innerHTML = '';
+            results.forEach(p => {
+                const card = document.createElement('div');
+                card.className = `post-card ${p.status === 'found' ? 'resolved' : ''}`;
+                card.innerHTML = `
+                    ${p.status === 'found' ? '<span class="found-badge">✅ मिल गया!</span>' : '<span class="found-badge" style="background:#28a745;">❌ खोया हुआ</span>'}
+                    <h3 class="person-name">${p.personName}</h3>
+                    <p>🎂 उम्र: ${p.age || '?'} | ${p.gender || '-'}</p>
+                    <p>📍 आखिरी बार: ${p.lastSeen}</p>
+                    <p>📅 तारीख: ${p.missingDate || 'अनजान'}</p>
+                    <p>📝 ${p.description || 'कोई विवरण नहीं'}</p>
+                    <p>📞 संपर्क: ${p.contactNo || '-'}</p>
+                    ${p.photoUrl ? `<img src="${p.photoUrl}" onerror="this.style.display='none'">` : ''}
+                    <hr>
+                    <small>📧 रिपोर्ट द्वारा: ${p.userEmail}</small><br>
+                    ${p.status === 'found' ? `<small style="color:#dc3545;">✅ मिला: ${p.foundBy || 'अज्ञात'} द्वारा</small>` : ''}
+                    <br><br>
+                    ${p.status !== 'found' ? `<button class="btn-found" onclick="markAsFound('${p.id}', '${p.status}')">✅ मिल गया - क्लिक करें</button>` : ''}
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Initial Load
+        loadRecentPosts();
+        setInterval(loadRecentPosts, 30000);
+        showSection('home');
+    </script>
+</body>
+</html>
